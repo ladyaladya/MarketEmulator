@@ -16,6 +16,20 @@ namespace MarketEmulator.Utilities
             }
         }
 
+        public static void StartInThread(this IEnumerable<ICheckoutLine> checkoutLines)
+        {
+            foreach (var line in checkoutLines)
+            {
+                line.StartInThread();
+            }
+
+            foreach (var line in checkoutLines)
+            {
+                line.Join();
+            }
+
+        }
+
         public static void AppendOrders(this IEnumerable<ICheckoutLine> checkoutLines)
         {
             foreach (var line in checkoutLines)

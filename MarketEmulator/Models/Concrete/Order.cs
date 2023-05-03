@@ -1,5 +1,4 @@
 ﻿using MarketEmulator.Models.Abstract;
-using System.Globalization;
 
 namespace MarketEmulator.Models.Concrete
 {
@@ -21,10 +20,12 @@ namespace MarketEmulator.Models.Concrete
 
         public void AnnounceOrderPurchased()
         {
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
-            Console.ForegroundColor = MarketColor;
-            Console.WriteLine($"Order purchased with amount - ${AmountString} in the {MarketName} on checkout line {CheckoutLineNumber}");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            lock (typeof(Console))
+            {
+                Console.ForegroundColor = MarketColor;
+                Console.WriteLine($"Order purchased with amount - ${AmountString} in the {MarketName} on checkout line {CheckoutLineNumber}");
+                Console.ResetColor();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MarketEmulator.Models.Concrete;
+﻿using MarketEmulator.Models.Abstract;
+using MarketEmulator.Models.Concrete;
 using MarketEmulator.Services.Abstract;
 using MarketEmulator.Services.Concrete;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,11 +10,31 @@ var serviceProvider = new ServiceCollection()
 
 var randomService = serviceProvider.GetService<IRandomService>() ?? new RandomService();
 
-var market = new Market(randomService, "Silpo", ConsoleColor.DarkYellow)
-    .AddCheckoutLines()
-    .AppendOrders();
+var marketsList = new List<IMarket>()
+{
+    new Market(randomService, "Silpo", ConsoleColor.DarkYellow)
+        .AddCheckoutLines()
+        .AppendOrders(),
+    new Market(randomService, "ATB", ConsoleColor.Blue)
+        .AddCheckoutLines()
+        .AppendOrders(),
+    new Market(randomService, "Auchan", ConsoleColor.Red)
+        .AddCheckoutLines()
+        .AppendOrders()
+};
 
-market.Start();
-market.PrintResultedData();
+foreach (var market in marketsList)
+{
+    market.StartInThread();
+}
 
+foreach (var market in marketsList)
+{
+    market.Join();
+}
+
+foreach (var market in marketsList)
+{
+    market.PrintResultedData();
+}
 

@@ -12,11 +12,14 @@ namespace MarketEmulator.Models.Concrete
         public ConsoleColor Color { get; }
         public decimal PurchasesAmount { get { return GetPurchasesAmount(); }}
 
+        private Thread _thread;
+
         public Market(IRandomService randomService, string name, ConsoleColor color)
         {
             _randomService = randomService;
             Name = name;
             Color = color;
+            _thread = new Thread(Start);
 
             AnnounceMarketCreated();
         }
@@ -37,19 +40,35 @@ namespace MarketEmulator.Models.Concrete
             return this;
         }
 
-        public IMarket Start()
+        public void Start()
         {
-            CheckoutLines.Start();
-            return this;
+            CheckoutLines.StartInThread();
+        }
+
+        public void StartInThread()
+        {
+            _thread.Start();
+        }
+
+        public void Join()
+        {
+            _thread.Join();
         }
 
         public void PrintResultedData()
         {
             Console.ForegroundColor = Color;
+            Console.WriteLine();
 
             Console.WriteLine($"Makret {Name} was successfully finish it's work.");
-            Console.WriteLine($"There was ${PurchasesAmount.ToString("N2")} erned");
+            Console.WriteLine($"{Name} has been open {CheckoutLines.Count()} checkout lines.");
 
+            foreach (var line in CheckoutLines)
+            {
+                Console.WriteLine($"Checkount line number {line.Number} has served {line.Orders.Count()} orders. Line has been earned ${line.PurchasesAmount.ToString("N2")}");
+            }
+
+            Console.WriteLine($"All checkout lines have been earned ${PurchasesAmount.ToString("N2")}");
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 

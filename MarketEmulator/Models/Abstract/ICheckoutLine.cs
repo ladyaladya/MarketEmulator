@@ -8,6 +8,8 @@
         public IEnumerable<IOrder> Orders { get; set; }
         public decimal PurchasesAmount { get; }
         public void Start();
+        public void StartInThread();
+        public void Join();
         public void AppendOrder(IOrder order);
     }
 }

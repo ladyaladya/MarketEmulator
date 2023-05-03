@@ -11,6 +11,7 @@ namespace MarketEmulator.Models.Concrete
         public ConsoleColor MarketColor { get; }
         public IEnumerable<IOrder> Orders { get; set; } = Enumerable.Empty<IOrder>();
         public decimal PurchasesAmount { get { return GetPurchasesAmount(); }}
+        private Thread _thread;
 
         public CheckoutLine(IRandomService randomService, int lineId, string marketName, ConsoleColor color)
         {
@@ -18,6 +19,7 @@ namespace MarketEmulator.Models.Concrete
             Number = lineId;
             MarketName = marketName;
             MarketColor = color;
+            _thread = new Thread(Start);
 
             AnnounceCheckoutLineCreated();
         }
@@ -35,6 +37,16 @@ namespace MarketEmulator.Models.Concrete
                 EmulatePause();
                 order.AnnounceOrderPurchased();
             }
+        }
+
+        public void StartInThread()
+        {
+            _thread.Start();
+        }
+
+        public void Join()
+        {
+            _thread.Join();
         }
 
         private void AnnounceCheckoutLineCreated()

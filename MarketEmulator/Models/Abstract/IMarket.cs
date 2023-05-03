@@ -7,7 +7,9 @@
         public ConsoleColor Color { get; }
         public decimal PurchasesAmount { get; }
         public IMarket AppendOrders();
-        public IMarket Start();
+        public void Start();
+        public void StartInThread();
+        public void Join();
         public void PrintResultedData();
     }
 }
